@@ -1,7 +1,7 @@
 
 (def config {:clojars-user "jiyinyiyong"
              :package 'mvc-works/skir
-             :version "0.1.0"
+             :version "0.0.1"
              :github-url "https://github.com/mvc-works/skir"
              :description "An over-simplified Node.js HTTP server"})
 
