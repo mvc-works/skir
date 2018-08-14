@@ -1,0 +1,18 @@
+{
+  "name": "skir",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:mvc-works/skir.git",
+  "author": "jiyinyiyong",
+  "scripts": {
+    "watch": "shadow-cljs watch app",
+    "compile": "shadow-cljs compile app",
+    "build": "shadow-cljs release app"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "shadow-cljs": "^2.5.0",
+    "source-map-support": "^0.5.8",
+    "ws": "^6.0.0"
+  }
+}
