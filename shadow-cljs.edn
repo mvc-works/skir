@@ -1,6 +1,6 @@
 
 {:source-paths ["src"]
- :dependencies []
+ :dependencies [[respo/router "0.4.0"]]
  :builds {:app {:target :node-script
                 :output-to "target/main.js"
                 :main skir.app.main/main!
