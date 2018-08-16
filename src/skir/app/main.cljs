@@ -6,7 +6,7 @@
             [skir.util :refer [clear! delay!]]
             [respo-router.parser :refer [parse-address]]))
 
-(def router-rules {"home" [], "async" []})
+(def router-rules {"home" [], "async" [], "html" [], "json" [], "edn" []})
 
 (defn render! [req]
   (do
@@ -17,6 +17,18 @@
        "async"
          (fn [send!]
            (delay! 3 #(send! {:status 200, :headers {}, :body "slow response finished!"})))
+       "json"
+         {:status 200,
+          :headers {:Content-Type :application/json},
+          :body (.stringify js/JSON (clj->js {:status :ok, :message "good"}))}
+       "edn"
+         {:status 200,
+          :headers {:Content-Type :application/edn},
+          :body (pr-str {:status :ok, :message "good"})}
+       "html"
+         {:status 200,
+          :headers {:Content-Type :text/html},
+          :body "<div><h2>Heading</h2> this is HTML</div>"}
        {:status 200, :headers {}, :body "hello developer!"}))))
 
 (defn try-request! []
