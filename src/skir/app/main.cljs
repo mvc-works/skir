@@ -4,7 +4,10 @@
             [skir.schema :as schema]
             [skir.client :refer [fetch!]]
             [skir.util :refer [clear! delay!]]
-            [respo-router.parser :refer [parse-address]]))
+            [respo-router.parser :refer [parse-address]]
+            ["parse5" :as parse5]
+            ["path" :as path]
+            ["fs" :as fs]))
 
 (def router-rules {"home" [], "async" [], "html" [], "json" [], "edn" []})
 
@@ -31,6 +34,16 @@
           :body "<div><h2>Heading</h2> this is HTML</div>"}
        {:status 200, :headers {}, :body "hello developer!"}))))
 
+(defn try-https! []
+  (let [url "https://news.ycombinator.com/item?id=17533341"]
+    (println "trying https url" url)
+    (fetch!
+     url
+     (fn [response]
+       (println "has result" (count (:body response)))
+       (fs/writeFileSync (path/join js/__dirname "hn.html") (:body response))
+       (comment .log js/console (parse5/parse (:body response)))))))
+
 (defn try-request! []
   (fetch!
    "http://localhost:4000"
@@ -39,6 +52,11 @@
    "http://localhost:4000/async"
    (fn [response] (println) (println "Response:" (pr-str response)))))
 
-(defn main! [] (skir/create-server! #(render! %) {:after-start (fn [] (try-request!))}))
+(defn try-server! []
+  (skir/create-server! #(render! %) {:after-start (fn [] (try-request!))}))
 
-(defn reload! [] (clear!) (println "Reload!") (try-request!))
+(defn run-task! [] (comment try-server!) (try-https!))
+
+(defn main! [] (run-task!))
+
+(defn reload! [] (clear!) (println "Reload!") (run-task!))
