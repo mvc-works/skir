@@ -8,7 +8,9 @@ Skir - an over-simplified HTTP Node.js server toolkit
 
 [![Clojars Project](https://img.shields.io/clojars/v/mvc-works/skir.svg)](https://clojars.org/mvc-works/skir)
 
-[mvc-works/skir "0.0.1"]
+```
+[mvc-works/skir "0.0.2"]
+```
 
 WIP...
 

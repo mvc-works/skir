@@ -1,5 +1,5 @@
 
-(ns skir.core (:require ["http" :as http]))
+(ns skir.core (:require ["http" :as http] [skir.util :refer [key->str]]))
 
 (def default-options
   {:port 4000,
@@ -15,7 +15,7 @@
 (defn write-response! [res edn-res]
   (println "write response" (pr-str edn-res))
   (set! (.-statusCode res) (:status edn-res))
-  (doseq [[k v] (:headers edn-res)] (.setHeader (name k) v))
+  (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
   (.end
    res
    (let [body (:body edn-res)]
