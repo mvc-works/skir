@@ -5,9 +5,9 @@
             [skir.client :refer [fetch!]]
             [skir.util :refer [clear! delay!]]
             [respo-router.parser :refer [parse-address]]
-            ["parse5" :as parse5]
+            ["fs" :as fs]
             ["path" :as path]
-            ["fs" :as fs]))
+            ["cheerio" :default cheerio]))
 
 (def router-rules {"home" [], "async" [], "html" [], "json" [], "edn" []})
 
@@ -34,16 +34,6 @@
           :body "<div><h2>Heading</h2> this is HTML</div>"}
        {:status 200, :headers {}, :body "hello developer!"}))))
 
-(defn try-https! []
-  (let [url "https://news.ycombinator.com/item?id=17533341"]
-    (println "trying https url" url)
-    (fetch!
-     url
-     (fn [response]
-       (println "has result" (count (:body response)))
-       (fs/writeFileSync (path/join js/__dirname "hn.html") (:body response))
-       (comment .log js/console (parse5/parse (:body response)))))))
-
 (defn try-request! []
   (fetch!
    "http://localhost:4000"
@@ -52,10 +42,13 @@
    "http://localhost:4000/async"
    (fn [response] (println) (println "Response:" (pr-str response)))))
 
-(defn try-server! []
-  (skir/create-server! #(render! %) {:after-start (fn [] (try-request!))}))
-
-(defn run-task! [] (comment try-server!) (try-https!))
+(defn run-task! []
+  (comment skir/create-server! #(render! %) {:after-start (fn [] (try-request!))})
+  (comment try-request!)
+  (let [html (fs/readFileSync (path/join js/__dirname "hn.html") "utf8")]
+    (.log js/console cheerio)
+    (.load cheerio html)
+    (.log js/console (cheerio ".comment"))))
 
 (defn main! [] (run-task!))
 
