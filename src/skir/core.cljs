@@ -1,5 +1,9 @@
 
-(ns skir.core (:require ["http" :as http] [skir.util :refer [key->str]]))
+(ns skir.core
+  (:require ["http" :as http]
+            [skir.util :refer [key->str chan? promise?]]
+            [cljs.core.async :refer [chan <! >! put! timeout close!]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def default-options
   {:port 4000,
@@ -32,8 +36,14 @@
    (let [options (merge default-options user-options)]
      (let [server (http/createServer
                    (fn [req res]
-                     (let [edn-req (req->edn req), edn-res (handler edn-req)]
-                       (if (fn? edn-res)
-                         (edn-res (fn [edn-res-data] (write-response! res edn-res-data)))
-                         (write-response! res edn-res)))))]
+                     (let [edn-req (req->edn req), response (handler edn-req)]
+                       (cond
+                         (fn? response)
+                           (response (fn [response-data] (write-response! res response-data)))
+                         (promise? response)
+                           (.then response (fn [result] (write-response! res result)))
+                         (chan? response)
+                           (go (write-response! res (<! response)) (close! response))
+                         map? response
+                         (write-response! res response) :else))))]
        (.listen server (:port options) (:host options) (:after-start options))))))
