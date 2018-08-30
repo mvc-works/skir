@@ -17,7 +17,6 @@
    :body nil})
 
 (defn write-response! [res edn-res]
-  (println "write response" (pr-str edn-res))
   (set! (.-statusCode res) (:status edn-res))
   (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
   (.end
@@ -30,20 +29,19 @@
        (.isArray js/Array body) (.stringify js/JSON body)
        :else (.stringify js/JSON body)))))
 
+(defn handle-request! [req res handler]
+  (let [edn-req (req->edn req), response (handler edn-req)]
+    (cond
+      (map? response) (write-response! res response)
+      (fn? response) (response (fn [response-data] (write-response! res response-data)))
+      (promise? response) (.then response (fn [result] (write-response! res result)))
+      (chan? response) (go (write-response! res (<! response)) (close! response))
+      :else
+        (do (println "Response:" response) (js/throw (js/Error. "Unrecognized response!"))))))
+
 (defn create-server!
   ([handler] (create-server! handler nil))
   ([handler user-options]
-   (let [options (merge default-options user-options)]
-     (let [server (http/createServer
-                   (fn [req res]
-                     (let [edn-req (req->edn req), response (handler edn-req)]
-                       (cond
-                         (fn? response)
-                           (response (fn [response-data] (write-response! res response-data)))
-                         (promise? response)
-                           (.then response (fn [result] (write-response! res result)))
-                         (chan? response)
-                           (go (write-response! res (<! response)) (close! response))
-                         map? response
-                         (write-response! res response) :else))))]
-       (.listen server (:port options) (:host options) (:after-start options))))))
+   (let [options (merge default-options user-options)
+         server (http/createServer (fn [req res] (handle-request! req res handler)))]
+     (.listen server (:port options) (:host options) (:after-start options)))))
