@@ -3,4 +3,5 @@
 
 (def request {:headers {}, :body nil})
 
-(def response {:status 200, :headers {:Content-Type "application/edn"}, :body nil})
+(def response
+  {:code 200, :messages nil, :headers {:Content-Type "application/edn"}, :body nil})

@@ -18,7 +18,7 @@ WIP...
 (require '[skir.core :as skir])
 
 (defn on-request! [req]
-  {:status 200
+  {:code 200
    :headers {:Content-Type "application/edn"}
    :body {:message "Hello World!"}})
 

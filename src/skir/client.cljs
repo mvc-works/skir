@@ -19,7 +19,8 @@
       (let [content-type (aget (.-headers res) "Content-Type")]
         (fn [text]
           (cb
-           {:status (.-statusCode res),
+           {:code (.-statusCode res),
+            :message (.-statusMessage res),
             :headers {},
             :body (case content-type
               "application/edn" (read-string text)

@@ -17,7 +17,8 @@
    :body nil})
 
 (defn write-response! [res edn-res]
-  (set! (.-statusCode res) (:status edn-res))
+  (set! (.-statusCode res) (:code edn-res))
+  (set! (.-statusMessage res) (:message edn-res))
   (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
   (.end
    res

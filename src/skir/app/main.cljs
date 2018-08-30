@@ -21,17 +21,17 @@
      (case (:name page)
        "callback"
          (fn [send!]
-           (delay! 3 #(send! {:status 200, :headers {}, :body "slow response finished!"})))
+           (delay! 3 #(send! {:code 200, :headers {}, :body "slow response finished!"})))
        "json"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :application/json},
           :body (.stringify js/JSON (clj->js {:status :ok, :message "good"}))}
        "edn"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :application/edn},
           :body (pr-str {:status :ok, :message "good"})}
        "html"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :text/html},
           :body "<div><h2>Heading</h2> this is HTML</div>"}
        "promise"
@@ -39,15 +39,18 @@
           (fn [resolve reject]
             (delay!
              3
-             (fn [] (resolve {:status 200, :headers {}, :body "Message from promise"})))))
+             (fn [] (resolve {:code 200, :headers {}, :body "Message from promise"})))))
        "channel"
          (let [delayed-message (chan)]
            (go
             (<! (timeout 4000))
-            (>! delayed-message {:status 200, :headers {}, :body "message from channel"}))
+            (>! delayed-message {:code 200, :headers {}, :body "message from channel"}))
            delayed-message)
-       nil {:status 200, :headers {}, :body "Home page"}
-       {:status 404, :headers {}, :body (str "404 page for " (pr-str page))}))))
+       nil {:code 200, :message "OK, default page", :headers {}, :body "Home page"}
+       {:code 404,
+        :message "Page not found",
+        :headers {},
+        :body (str "404 page for " (pr-str page))}))))
 
 (defn try-request! []
   (fetch!
