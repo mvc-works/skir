@@ -1,7 +1,7 @@
 
 (def config {:clojars-user "jiyinyiyong"
              :package 'mvc-works/skir
-             :version "0.0.2"
+             :version "0.0.3"
              :github-url "https://github.com/mvc-works/skir"
              :description "An over-simplified Node.js HTTP server"})
 
@@ -10,7 +10,7 @@
 
 (set-env!
   :resource-paths #{"src"}
-  :dependencies '[]
+  :dependencies '[[org.clojure/core.async "0.4.474"]]
   :repositories #(conj % ["clojars" {:url "https://clojars.org/repo/"
                                      :username (:clojars-user config)
                                      :password (read-password "Clojars password: ")}]))

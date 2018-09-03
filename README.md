@@ -9,7 +9,7 @@ Skir - an over-simplified HTTP Node.js server toolkit
 [![Clojars Project](https://img.shields.io/clojars/v/mvc-works/skir.svg)](https://clojars.org/mvc-works/skir)
 
 ```edn
-[mvc-works/skir "0.0.2"]
+[mvc-works/skir "0.0.3"]
 ```
 
 WIP...
@@ -18,7 +18,8 @@ WIP...
 (require '[skir.core :as skir])
 
 (defn on-request! [req]
-  {:status 200
+  {:code 200
+   :message "OK"
    :headers {:Content-Type "application/edn"}
    :body {:message "Hello World!"}})
 

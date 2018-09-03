@@ -1,5 +1,9 @@
 
-(ns skir.util (:require [cljs.tools.reader :refer [read-string]]))
+(ns skir.util
+  (:require [cljs.tools.reader :refer [read-string]]
+            [cljs.core.async.impl.protocols :as async-protocol]))
+
+(defn chan? [x] (satisfies? async-protocol/ReadPort x))
 
 (defn clear! []
   (.clear js/console)
@@ -9,3 +13,5 @@
 
 (defn key->str [v]
   (cond (keyword? v) (name v) (string? v) v (coll? v) (pr-str v) :else (str v)))
+
+(defn promise? [x] (= x (.resolve js/Promise x)))

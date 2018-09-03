@@ -7,49 +7,67 @@
             [respo-router.parser :refer [parse-address]]
             ["fs" :as fs]
             ["path" :as path]
-            ["cheerio" :default cheerio]))
+            [cljs.core.async :refer [chan <! >! timeout]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(def router-rules {"home" [], "async" [], "html" [], "json" [], "edn" []})
+(def router-rules
+  {"home" [], "callback" [], "html" [], "json" [], "edn" [], "promise" [], "channel" []})
 
 (defn render! [req]
   (do
    (println)
-   (println "Requests:" req)
+   (println "Requests:" (pr-str req))
    (let [router (parse-address (:url req) router-rules), page (get-in router [:path 0])]
      (case (:name page)
-       "async"
+       "callback"
          (fn [send!]
-           (delay! 3 #(send! {:status 200, :headers {}, :body "slow response finished!"})))
+           (delay! 3 #(send! {:code 200, :headers {}, :body "slow response finished!"})))
        "json"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :application/json},
           :body (.stringify js/JSON (clj->js {:status :ok, :message "good"}))}
        "edn"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :application/edn},
           :body (pr-str {:status :ok, :message "good"})}
        "html"
-         {:status 200,
+         {:code 200,
           :headers {:Content-Type :text/html},
           :body "<div><h2>Heading</h2> this is HTML</div>"}
-       {:status 200, :headers {}, :body "hello developer!"}))))
+       "promise"
+         (js/Promise.
+          (fn [resolve reject]
+            (delay!
+             3
+             (fn [] (resolve {:code 200, :headers {}, :body "Message from promise"})))))
+       "channel"
+         (let [delayed-message (chan)]
+           (go
+            (<! (timeout 4000))
+            (>! delayed-message {:code 200, :headers {}, :body "message from channel"}))
+           delayed-message)
+       nil {:code 200, :message "OK, default page", :headers {}, :body "Home page"}
+       {:code 404,
+        :message "Page not found",
+        :headers {},
+        :body (str "404 page for " (pr-str page))}))))
 
 (defn try-request! []
   (fetch!
    "http://localhost:4000"
    (fn [response] (println) (println "Response:" (pr-str response))))
   (fetch!
-   "http://localhost:4000/async"
+   "http://localhost:4000/callback"
+   (fn [response] (println) (println "Response:" (pr-str response))))
+  (fetch!
+   "http://localhost:4000/promise"
+   (fn [response] (println) (println "Response:" (pr-str response))))
+  (fetch!
+   "http://localhost:4000/channel"
    (fn [response] (println) (println "Response:" (pr-str response)))))
 
-(defn run-task! []
-  (comment skir/create-server! #(render! %) {:after-start (fn [] (try-request!))})
-  (comment try-request!)
-  (let [html (fs/readFileSync (path/join js/__dirname "hn.html") "utf8")]
-    (.log js/console cheerio)
-    (.load cheerio html)
-    (.log js/console (cheerio ".comment"))))
+(defn run-task! [] (try-request!))
 
-(defn main! [] (run-task!))
+(defn main! [] (skir/create-server! #(render! %) {:after-start (fn [] (run-task!))}))
 
 (defn reload! [] (clear!) (println "Reload!") (run-task!))
