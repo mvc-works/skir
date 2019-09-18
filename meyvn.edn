@@ -1,0 +1,9 @@
+
+{:pom {:group-id "mvc-works",
+       :artifact-id "skir",
+       :version "0.0.3",
+       :name "An over-simplified Node.js HTTP server"}
+ :packaging {:jar {:enabled true
+                   :remote-repository {:id "clojars"
+                                       :url "https://clojars.org/repo"}}}
+ :scm {:enabled true}}
