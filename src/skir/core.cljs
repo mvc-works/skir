@@ -45,4 +45,4 @@
   ([handler user-options]
    (let [options (merge default-options user-options)
          server (http/createServer (fn [req res] (handle-request! req res handler)))]
-     (.listen server (:port options) (:host options) (:after-start options)))))
+     (.listen server (:port options) (:host options) (fn [] ((:after-start options) options))))))

@@ -66,8 +66,13 @@
    "http://localhost:4000/channel"
    (fn [response] (println) (println "Response:" (pr-str response)))))
 
-(defn run-task! [] (try-request!))
+(defn run-task! [] (comment try-request!))
 
-(defn main! [] (skir/create-server! #(render! %) {:after-start (fn [] (run-task!))}))
+(defn main! []
+  (skir/create-server!
+   #(render! %)
+   (comment
+    {}
+    (:after-start (fn [options] (println "options" options) (comment run-task!))))))
 
 (defn reload! [] (clear!) (println "Reload!") (run-task!))
