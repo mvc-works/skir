@@ -7,7 +7,8 @@
             [respo-router.parser :refer [parse-address]]
             ["fs" :as fs]
             ["path" :as path]
-            [cljs.core.async :refer [chan <! >! timeout]])
+            [cljs.core.async :refer [chan <! >! timeout]]
+            [skir.router :refer [match-path]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def router-rules
@@ -16,8 +17,12 @@
 (defn render! [req]
   (do
    (println)
-   (println "Requests:" (pr-str req))
-   (let [router (parse-address (:url req) router-rules), page (get-in router [:path 0])]
+   (comment println "Requests:" (pr-str req))
+   (comment println "Url:" (:url req))
+   (let [router (parse-address (:url req) router-rules)
+         page (get-in router [:path 0])
+         parse-result (match-path (:url req) "a/:b")]
+     (println "Parsed:" parse-result)
      (case (:name page)
        "callback"
          (fn [send!]

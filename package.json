@@ -12,11 +12,11 @@
   "license": "MIT",
   "devDependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "shadow-cljs": "^2.8.68",
+    "shadow-cljs": "^2.8.81",
     "source-map-support": "^0.5.16",
     "ws": "^7.2.0"
   },
   "dependencies": {
-    "parse5": "^5.1.0"
+    "parse5": "^5.1.1"
   }
 }
