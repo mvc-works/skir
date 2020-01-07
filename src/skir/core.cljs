@@ -37,8 +37,7 @@
       (fn? response) (response (fn [response-data] (write-response! res response-data)))
       (promise? response) (.then response (fn [result] (write-response! res result)))
       (chan? response) (go (write-response! res (<! response)) (close! response))
-      :else
-        (do (println "Response:" response) (js/throw (js/Error. "Unrecognized response!"))))))
+      :else (do (println "Response:" response) (throw (js/Error. "Unrecognized response!"))))))
 
 (defn create-server!
   ([handler] (create-server! handler nil))

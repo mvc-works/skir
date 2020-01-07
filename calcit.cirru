@@ -1241,7 +1241,7 @@
                                   |r $ {} (:type :leaf) (:by |-OxUkFUX3) (:at 1535652004344) (:text |response) (:id |oX3xMmc5KUE)
                               |r $ {} (:type :expr) (:by |-OxUkFUX3) (:at 1535652004344) (:id |nzChvX3qoku)
                                 :data $ {}
-                                  |T $ {} (:type :leaf) (:by |-OxUkFUX3) (:at 1535652004344) (:text |js/throw) (:id |fYrw2lvC2W6)
+                                  |T $ {} (:type :leaf) (:by |-OxUkFUX3) (:at 1578379806306) (:text |throw) (:id |fYrw2lvC2W6)
                                   |j $ {} (:type :expr) (:by |-OxUkFUX3) (:at 1535652004344) (:id |6nILhX4qZda)
                                     :data $ {}
                                       |T $ {} (:type :leaf) (:by |-OxUkFUX3) (:at 1535652004344) (:text |js/Error.) (:id |CcXr0JivzJp)
