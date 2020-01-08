@@ -16,7 +16,7 @@
    :headers (js->clj (.-headers req) :keywordize-keys true),
    :body nil})
 
-(defn write-response! [res edn-res]
+(defn write-response! [^js res edn-res]
   (set! (.-statusCode res) (:code edn-res))
   (set! (.-statusMessage res) (:message edn-res))
   (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
