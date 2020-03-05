@@ -1,5 +1,11 @@
-
-{:aliases
- {:release
-  {:extra-deps {mhuebert/deps-library {:mvn/version "0.3.0"}}
-   :main-opts ["-m" "deps-library.release"]}}}
+{
+  :paths ["src"]
+  :aliases {
+    :release {
+      :extra-deps {
+        mhuebert/deps-library {:mvn/version "0.3.0"}
+      }
+      :main-opts ["-m" "deps-library.release"]
+    }
+  }
+}
