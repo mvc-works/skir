@@ -1,4 +1,5 @@
 {:version "0.0.7-a2"
  :group-id "mvc-works"
  :artifact-id "skir"
- :scm-url "https://github.com/mhuebert/deps-library"}
+ :skip-tag true
+ :scm-url "https://github.com/mvc-works/skir"}

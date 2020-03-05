@@ -3,7 +3,7 @@
   :aliases {
     :release {
       :extra-deps {
-        mhuebert/deps-library {:mvn/version "0.3.0"}
+        appliedscience/deps-library {:mvn/version "0.3.1"}
       }
       :main-opts ["-m" "deps-library.release"]
     }
