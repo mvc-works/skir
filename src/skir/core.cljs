@@ -24,7 +24,8 @@
      (.-method req)),
    :url (.-url req),
    :headers (js->clj (.-headers req) :keywordize-keys true),
-   :body nil})
+   :body nil,
+   :get-original (fn [req] req)})
 
 (defn write-response! [^js res edn-res]
   (set! (.-statusCode res) (:code edn-res))
