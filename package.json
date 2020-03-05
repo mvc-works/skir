@@ -7,6 +7,7 @@
   "scripts": {
     "watch": "shadow-cljs watch app",
     "compile": "shadow-cljs compile app",
+    "deploy": "clj -A:release --prefix=''",
     "build": "shadow-cljs release app"
   },
   "license": "MIT",
@@ -16,7 +17,5 @@
     "source-map-support": "^0.5.16",
     "ws": "^7.2.1"
   },
-  "dependencies": {
-    "parse5": "^5.1.1"
-  }
+  "dependencies": {}
 }
