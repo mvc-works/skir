@@ -41,7 +41,7 @@ jobs:
       - run: yarn
 
       - name: run tests
-        run: yarn shadow-cljs compile client
+        run: yarn shadow-cljs compile app
 
       - run: echo Working on ${{ github.ref }}
 
