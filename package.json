@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "shadow-cljs watch app",
     "compile": "shadow-cljs compile app",
-    "deploy": "clj -A:release --prefox=''",
+    "deploy": "clj -A:release --prefix=''",
     "build": "shadow-cljs release app"
   },
   "license": "MIT",
