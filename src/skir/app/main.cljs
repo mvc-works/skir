@@ -19,7 +19,7 @@
    (println)
    (comment println "Requests:" (pr-str req))
    (comment println "Url:" (:url req))
-   (println req)
+   (js/console.log (:original-request req))
    (let [router (parse-address (:url req) router-rules)
          page (get-in router [:path 0])
          parse-result (match-path (:url req) "a/:b")]
