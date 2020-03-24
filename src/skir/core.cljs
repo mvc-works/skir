@@ -42,12 +42,13 @@
        :else (.stringify js/JSON body)))))
 
 (defn handle-request! [req res handler]
-  (let [edn-req (req->edn req), response (handler edn-req)]
+  (let [edn-req (req->edn req), response (handler edn-req res)]
     (cond
       (map? response) (write-response! res response)
       (fn? response) (response (fn [response-data] (write-response! res response-data)))
       (promise? response) (.then response (fn [result] (write-response! res result)))
       (chan? response) (go (write-response! res (<! response)) (close! response))
+      (= response :effect) (comment "Done with effect")
       :else (do (println "Response:" response) (throw (js/Error. "Unrecognized response!"))))))
 
 (defn create-server!

@@ -14,12 +14,12 @@
 (def router-rules
   {"home" [], "callback" [], "html" [], "json" [], "edn" [], "promise" [], "channel" []})
 
-(defn render! [req]
+(defn render! [req res]
   (do
    (println)
    (comment println "Requests:" (pr-str req))
    (comment println "Url:" (:url req))
-   (js/console.log (:original-request req))
+   (js/console.log (comment (:original-request req)) res)
    (let [router (parse-address (:url req) router-rules)
          page (get-in router [:path 0])
          parse-result (match-path (:url req) "a/:b")]
@@ -52,6 +52,7 @@
             (<! (timeout 4000))
             (>! delayed-message {:code 200, :headers {}, :body "message from channel"}))
            delayed-message)
+       "effect" (do (.end "Res") :effect)
        nil {:code 200, :message "OK, default page", :headers {}, :body "Home page"}
        {:code 404,
         :message "Page not found",
@@ -76,7 +77,7 @@
 
 (defn main! []
   (skir/create-server!
-   #(render! %)
+   #(render! %1 %2)
    (comment
     {}
     (:after-start (fn [options] (println "options" options) (comment run-task!))))))
