@@ -1,5 +1,6 @@
-{:version "0.0.8-a1"
- :group-id "mvc-works"
- :artifact-id "skir"
- :skip-tag true
+{:version "0.0.8",
+ :group-id "mvc-works",
+ :artifact-id "skir",
+ :skip-tag true,
  :scm-url "https://github.com/mvc-works/skir"}
+
