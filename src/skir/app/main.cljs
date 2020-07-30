@@ -16,14 +16,14 @@
 
 (defn render! [req res]
   (do
-   (println)
+   (comment println)
    (comment println "Requests:" (pr-str req))
    (comment println "Url:" (:url req))
-   (js/console.log (comment (:original-request req)) res)
+   (comment js/console.log (:original-request req) res)
    (let [router (parse-address (:url req) router-rules)
          page (get-in router [:path 0])
          parse-result (match-path (:url req) "a/:b")]
-     (println "Parsed:" parse-result)
+     (println "Parsed:" router parse-result)
      (case (:name page)
        "callback"
          (fn [send!]
@@ -31,7 +31,7 @@
        "json"
          {:code 200,
           :headers {:Content-Type :application/json},
-          :body (.stringify js/JSON (clj->js {:status :ok, :message "good"}))}
+          :body (js/JSON.stringify (clj->js {:status :ok, :message "good"}))}
        "edn"
          {:code 200,
           :headers {:Content-Type :application/edn},
@@ -47,11 +47,7 @@
              3
              (fn [] (resolve {:code 200, :headers {}, :body "Message from promise"})))))
        "channel"
-         (let [delayed-message (chan)]
-           (go
-            (<! (timeout 4000))
-            (>! delayed-message {:code 200, :headers {}, :body "message from channel"}))
-           delayed-message)
+         (go (<! (timeout 4000)) {:code 200, :headers {}, :body "message from channel"})
        "effect" (do (.end "Res") :effect)
        nil {:code 200, :message "OK, default page", :headers {}, :body "Home page"}
        {:code 404,
