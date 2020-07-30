@@ -5,8 +5,8 @@
   ;   "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
   ; }
   :dependencies [
-    [org.clojure/core.async "0.4.474"]
     [respo/router "0.4.0"]
+    [mvc-works/lilac "0.1.6"]
   ]
   :builds {
     :app {

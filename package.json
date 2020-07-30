@@ -1,6 +1,6 @@
 {
   "name": "skir",
-  "version": "0.0.8",
+  "version": "0.0.9-a1",
   "main": "index.js",
   "repository": "git@github.com:mvc-works/skir.git",
   "author": "jiyinyiyong",
@@ -13,9 +13,9 @@
   "license": "MIT",
   "devDependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "shadow-cljs": "^2.9.10",
+    "shadow-cljs": "^2.10.17",
     "source-map-support": "^0.5.19",
-    "ws": "^7.3.0"
+    "ws": "^7.3.1"
   },
   "dependencies": {}
 }

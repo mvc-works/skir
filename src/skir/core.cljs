@@ -2,13 +2,24 @@
 (ns skir.core
   (:require ["http" :as http]
             [skir.util :refer [key->str chan? promise?]]
-            [cljs.core.async :refer [chan <! >! put! timeout close!]])
+            [cljs.core.async :refer [chan <! >! put! timeout close!]]
+            [lilac.core
+             :refer
+             [dev-check record+ number+ string+ any+ keyword+ map+ optional+ or+]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def default-options
   {:port 4000,
    :after-start (fn [options] (println (str "Server listening on " (:port options)))),
    :host "0.0.0.0"})
+
+(def lilac-res
+  (record+
+   {:code (number+),
+    :message (optional+ (string+)),
+    :headers (optional+ (map+ (or+ [(keyword+) (string+)]) (or+ [(keyword+) (string+)]))),
+    :body (any+)}
+   {:check-keys? true}))
 
 (defn req->edn [req]
   {:method (case (.-method req)
@@ -28,6 +39,7 @@
    :original-request req})
 
 (defn write-response! [^js res edn-res]
+  (dev-check edn-res lilac-res)
   (set! (.-statusCode res) (:code edn-res))
   (set! (.-statusMessage res) (:message edn-res))
   (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
@@ -38,8 +50,8 @@
        (coll? body) (pr-str body)
        (nil? body) ""
        (string? body) body
-       (.isArray js/Array body) (.stringify js/JSON body)
-       :else (.stringify js/JSON body)))))
+       (js/Array.isArray body) (js/JSON.stringify body)
+       :else (js/JSON.stringify body)))))
 
 (defn handle-request! [req res handler]
   (let [edn-req (req->edn req), response (handler edn-req res)]
@@ -49,7 +61,7 @@
       (promise? response) (.then response (fn [result] (write-response! res result)))
       (chan? response) (go (write-response! res (<! response)) (close! response))
       (= response :effect) (comment "Done with effect")
-      :else (do (println "Response:" response) (throw (js/Error. "Unrecognized response!"))))))
+      :else (do (println "Response:" response) (throw (js/Error. "Unknown response!"))))))
 
 (defn create-server!
   ([handler] (create-server! handler nil))

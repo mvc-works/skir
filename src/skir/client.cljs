@@ -1,7 +1,7 @@
 
 (ns skir.client (:require ["http" :as http] [cljs.reader :refer [read-string]]))
 
-(defn collect-response-data! [res cb!]
+(defn collect-response-data! [^js res cb!]
   (let [*raw-data (atom "")]
     (.setEncoding res "utf8")
     (.on res "data" (fn [chunk] (swap! *raw-data str chunk)))
@@ -13,7 +13,7 @@
   (.get
    http
    url
-   (fn [res]
+   (fn [^js res]
      (collect-response-data!
       res
       (let [content-type (aget (.-headers res) "Content-Type")]
