@@ -5,7 +5,17 @@
             [cljs.core.async :refer [chan <! >! put! timeout close!]]
             [lilac.core
              :refer
-             [dev-check record+ number+ string+ any+ keyword+ map+ optional+ or+ boolean+]])
+             [dev-check
+              record+
+              number+
+              string+
+              any+
+              keyword+
+              map+
+              optional+
+              or+
+              boolean+
+              nil+]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def default-options

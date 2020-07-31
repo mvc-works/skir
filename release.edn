@@ -1,4 +1,4 @@
-{:version "0.0.9-a3",
+{:version "0.0.9-a4",
  :group-id "mvc-works",
  :artifact-id "skir",
  :skip-tag true,
