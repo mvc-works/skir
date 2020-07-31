@@ -18,7 +18,9 @@
    {:code (number+),
     :message (optional+ (string+)),
     :headers (optional+
-              (map+ (or+ [(keyword+) (string+)]) (or+ [(keyword+) (string+) (boolean+)]))),
+              (map+
+               (or+ [(keyword+) (string+)])
+               (or+ [(keyword+) (string+) (boolean+) (nil+)]))),
     :body (any+)}
    {:check-keys? true}))
 
