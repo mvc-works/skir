@@ -5,7 +5,17 @@
             [cljs.core.async :refer [chan <! >! put! timeout close!]]
             [lilac.core
              :refer
-             [dev-check record+ number+ string+ any+ keyword+ map+ optional+ or+]])
+             [dev-check
+              record+
+              number+
+              string+
+              any+
+              keyword+
+              map+
+              optional+
+              or+
+              boolean+
+              nil+]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def default-options
@@ -13,11 +23,14 @@
    :after-start (fn [options] (println (str "Server listening on " (:port options)))),
    :host "0.0.0.0"})
 
-(def lilac-res
+(def lilac-response
   (record+
    {:code (number+),
     :message (optional+ (string+)),
-    :headers (optional+ (map+ (or+ [(keyword+) (string+)]) (or+ [(keyword+) (string+)]))),
+    :headers (optional+
+              (map+
+               (or+ [(keyword+) (string+)])
+               (or+ [(keyword+) (string+) (boolean+) (nil+)]))),
     :body (any+)}
    {:check-keys? true}))
 
@@ -39,7 +52,7 @@
    :original-request req})
 
 (defn write-response! [^js res edn-res]
-  (dev-check edn-res lilac-res)
+  (dev-check edn-res lilac-response)
   (set! (.-statusCode res) (:code edn-res))
   (set! (.-statusMessage res) (:message edn-res))
   (doseq [[k v] (:headers edn-res)] (.setHeader res (key->str k) (key->str v)))
