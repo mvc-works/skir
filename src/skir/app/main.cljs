@@ -12,7 +12,15 @@
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def router-rules
-  {"home" [], "callback" [], "html" [], "json" [], "edn" [], "promise" [], "channel" []})
+  {"home" [],
+   "callback" [],
+   "html" [],
+   "json" [],
+   "edn" [],
+   "promise" [],
+   "channel" [],
+   "error" [],
+   "throw-error" []})
 
 (defn render! [req res]
   (do
@@ -49,6 +57,8 @@
        "channel"
          (go (<! (timeout 4000)) {:code 200, :headers {}, :body "message from channel"})
        "effect" (do (.end "Res") :effect)
+       "error" {:body "error"}
+       "throw-error" (throw (js/Error. "Custom error"))
        nil {:code 200, :message "OK, default page", :headers {}, :body "Home page"}
        {:code 404,
         :message "Page not found",
@@ -78,4 +88,4 @@
     {}
     (:after-start (fn [options] (println "options" options) (comment run-task!))))))
 
-(defn reload! [] (clear!) (println "Reload!") (run-task!))
+(defn ^:dev/after-load reload! [] (clear!) (println "Reload!") (run-task!))
