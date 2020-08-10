@@ -11,7 +11,6 @@
   :builds {
     :app {
       :target :node-script, :output-to "target/server.js", :main skir.app.main/main!
-      :devtools {:after-load skir.app.main/reload!}
     }
   }
 }

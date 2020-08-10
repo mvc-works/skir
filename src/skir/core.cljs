@@ -66,15 +66,24 @@
        (js/Array.isArray body) (js/JSON.stringify body)
        :else (js/JSON.stringify body)))))
 
-(defn handle-request! [req res handler]
-  (let [edn-req (req->edn req), response (handler edn-req res)]
-    (cond
-      (map? response) (write-response! res response)
-      (fn? response) (response (fn [response-data] (write-response! res response-data)))
-      (promise? response) (.then response (fn [result] (write-response! res result)))
-      (chan? response) (go (write-response! res (<! response)) (close! response))
-      (= response :effect) (comment "Done with effect")
-      :else (do (println "Response:" response) (throw (js/Error. "Unknown response!"))))))
+(defn handle-request! [req ^js res handler]
+  (try
+   (let [edn-req (req->edn req), response (handler edn-req res)]
+     (cond
+       (map? response) (write-response! res response)
+       (fn? response) (response (fn [response-data] (write-response! res response-data)))
+       (promise? response) (.then response (fn [result] (write-response! res result)))
+       (chan? response) (go (write-response! res (<! response)) (close! response))
+       (= response :effect) (comment "Done with effect")
+       :else (do (println "Response:" response) (throw (js/Error. "Unknown response!")))))
+   (catch
+    js/Error
+    err
+    (do
+     (js/console.error err)
+     (set! (.-statusCode res) 500)
+     (set! (.-statusMessage res) "Server Error")
+     (.end res (str (pr-str err) "\n" "\n" (.-stack err)))))))
 
 (defn create-server!
   ([handler] (create-server! handler nil))
